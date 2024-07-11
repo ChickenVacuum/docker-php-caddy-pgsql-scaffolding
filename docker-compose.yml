@@ -1,0 +1,59 @@
+services:
+    app:
+        build:
+            args:
+                user: app_user # To customize
+                uid: 1000
+            context: .
+            dockerfile: Dockerfile-php
+        container_name: app_container # To customize
+        restart: unless-stopped
+        working_dir: /var/www/
+        volumes:
+            - ./:/var/www
+        networks:
+            - app-network # To customize
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+    caddy:
+        build:
+            context: .
+            dockerfile: Dockerfile-caddy
+        restart: unless-stopped
+        working_dir: /var/www
+        ports:
+            - "80:80"
+            - "443:443"
+            - "2016:2016"
+        volumes:
+            - ./Caddyfile:/etc/caddy/Caddyfile
+            - ./:/var/www
+            - caddy_data:/data
+            - caddy_config:/config
+            - ./caddy_certs:/root/certs # to sync mkcert certificates to Caddy
+        networks:
+            - app-network # To customize
+        container_name: caddy_container # To customize
+
+    db:
+        image: postgres:16
+        restart: unless-stopped
+        environment:
+            POSTGRES_PASSWORD: pgsql_pwd # To customize
+            POSTGRES_DB: app_db # To customize
+        ports:
+            - "5432:5432"
+        volumes:
+            - pg_data:/var/lib/postgresql/data
+        networks:
+            - app-network # To customize
+        container_name: db_container # To customize
+
+volumes:
+    caddy_data:
+    caddy_config:
+    pg_data:
+
+networks:
+    app-network: # To customize
+        driver: bridge

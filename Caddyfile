@@ -1,0 +1,14 @@
+localhost {
+    root * /var/www/public
+    php_fastcgi app:9000 {
+        resolve_root_symlink
+    }
+    file_server
+
+    log {
+        output file /var/log/access.log
+    }
+
+    tls /root/certs/cert.pem /root/certs/key.pem
+}
+

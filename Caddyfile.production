@@ -1,0 +1,16 @@
+example.com, example.fr { # To customize
+    root * /var/www/public
+    php_fastcgi app:9000 {
+        resolve_root_symlink
+    }
+    file_server
+
+    log {
+        output file /var/log/access.log
+    }
+
+    # If Cloudflare
+    tls {
+        dns cloudflare CLOUDFLARE_KEY # To customize
+    }
+}
