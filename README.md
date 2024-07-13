@@ -37,8 +37,8 @@ You'll need to **restart your browser** for this to take effect.
 First, check the requirements above, as you need mkcert.
 Then, run:
 ```
-docker compose build
-docker compose up -d
+docker compose --env-file .env.docker build
+docker compose --env-file .env.docker up -d
 ```
 
 Finished!  
@@ -49,8 +49,8 @@ If you have a problem with the Database, follow the instructions on the page.
 
 ## Configuration
 
-In `docker-compose.yml` you'll find some lines with the comment: `# To customize`. You can change these, but be careful to be consistent through the file.  
-For example if you change the network name `app-network`, you need to change it everywhere it appears.
+There is a .env.docker file included with default and working parameters.  
+You can change them to your convenience.
 
 # Production mode
 

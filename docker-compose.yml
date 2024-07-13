@@ -1,18 +1,18 @@
 services:
-    app:
+    php:
         build:
             args:
-                user: app_user # To customize
+                user: ${PHP_CONTAINER_USER}
                 uid: 1000
             context: .
             dockerfile: Dockerfile-php
-        container_name: app_container # To customize
+        container_name: ${PHP_CONTAINER_NAME}
         restart: unless-stopped
         working_dir: /var/www/
         volumes:
             - ./:/var/www
         networks:
-            - app-network # To customize
+            - php-app-network
         extra_hosts:
             - "host.docker.internal:host-gateway"
     caddy:
@@ -21,6 +21,8 @@ services:
             dockerfile: Dockerfile-caddy
         restart: unless-stopped
         working_dir: /var/www
+        environment:
+            FASTCGI_TARGET: ${PHP_CONTAINER_NAME}
         ports:
             - "80:80"
             - "443:443"
@@ -32,22 +34,23 @@ services:
             - caddy_config:/config
             - ./caddy_certs:/root/certs # to sync mkcert certificates to Caddy
         networks:
-            - app-network # To customize
-        container_name: caddy_container # To customize
+            - php-app-network
+        container_name: ${CADDY_CONTAINER_NAME}
 
     db:
         image: postgres:16
         restart: unless-stopped
         environment:
-            POSTGRES_PASSWORD: pgsql_pwd # To customize
-            POSTGRES_DB: app_db # To customize
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_DB: ${DB_NAME}
         ports:
             - "5432:5432"
         volumes:
             - pg_data:/var/lib/postgresql/data
         networks:
-            - app-network # To customize
-        container_name: db_container # To customize
+            - php-app-network
+        container_name: ${DB_CONTAINER_NAME}
 
 volumes:
     caddy_data:
@@ -55,5 +58,5 @@ volumes:
     pg_data:
 
 networks:
-    app-network: # To customize
+    php-app-network:
         driver: bridge
