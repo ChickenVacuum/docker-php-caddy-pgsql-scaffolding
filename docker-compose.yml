@@ -8,6 +8,12 @@ services:
             dockerfile: Dockerfile-php
         container_name: ${PHP_CONTAINER_NAME}
         restart: unless-stopped
+        environment:
+            DB_CONTAINER_NAME: ${DB_CONTAINER_NAME}
+            DB_LOCAL_PORT: ${DB_LOCAL_PORT}
+            DB_USER: ${DB_USER}
+            DB_PASSWORD: ${DB_PASSWORD}
+            DB_NAME: ${DB_NAME}
         working_dir: /var/www/
         volumes:
             - ./:/var/www

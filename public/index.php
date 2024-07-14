@@ -24,7 +24,12 @@
 <p>
     DB Status:
     <?php
-    $dbConnection = pg_connect("host=db_container port=5432 dbname=app_db user=postgres password=pgsql_pwd");
+    $dbConnection = pg_connect(
+        "host=".getenv("DB_CONTAINER_NAME").
+        " port=".getenv("DB_LOCAL_PORT").
+        " dbname=".getenv("DB_NAME").
+        " user=".getenv("DB_USER").
+        " password=".getenv("DB_PASSWORD"));
     if ($dbConnection === false) {
         echo "❌<br>
     Does your host, port, dbname, user and password match?<br>
